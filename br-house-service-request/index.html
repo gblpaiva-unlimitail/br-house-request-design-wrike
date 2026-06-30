@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="u_icon.svg" />
+  <link rel="shortcut icon" href="u_icon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unlimitail — Abertura de Briefing Criativo</title>
+  <style>
+    @font-face { font-family:'Borna'; src:url('fonts/borna-regular-webfont.ttf') format('truetype'); font-weight:400; }
+    @font-face { font-family:'Borna'; src:url('fonts/borna-medium-webfont.ttf') format('truetype'); font-weight:500; }
+    @font-face { font-family:'Borna'; src:url('fonts/borna-semibold-webfont.ttf') format('truetype'); font-weight:600; }
+    @font-face { font-family:'Borna'; src:url('fonts/borna-bold-webfont.ttf') format('truetype'); font-weight:700; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root { --blue-dark: #001D4B; }
+
+    html, body {
+      font-family: 'Borna', sans-serif;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* ── INTRO ── */
+    #intro {
+      position: fixed; inset: 0;
+      background: var(--blue-dark);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000;
+    }
+    #intro-logo img { height: clamp(32px, 6vw, 56px); width: auto; }
+    #intro.out { animation: fadeOut 0.45s ease forwards; }
+    @keyframes fadeOut { to { opacity: 0; pointer-events: none; } }
+
+    /* ── PAGE ── */
+    #page {
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, #7EC4E8 0%, #A8D4EC 35%, #C2DFF2 65%, #DBE8F5 100%);
+    }
+    #page.visible { opacity: 1; }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 44px;
+      flex-shrink: 0;
+    }
+
+    .header-logo { opacity: 0; transition: opacity 0.4s ease; }
+    .header-logo.visible { opacity: 1; }
+    .header-logo img { height: 19px; width: auto; }
+
+    .header-center {
+      text-align: center;
+    }
+    .header-center .title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--blue-dark);
+      letter-spacing: 0.01em;
+    }
+    .header-center .sub {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--blue-dark);
+      opacity: 0.6;
+      margin-top: 2px;
+    }
+
+    .header-icon img { height: 28px; width: auto; }
+
+    /* ── HERO ── */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 40px 60px;
+    }
+
+    .hero-title {
+      font-size: clamp(52px, 6.5vw, 86px);
+      font-weight: 600;
+      color: var(--blue-dark);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 28px;
+    }
+
+    .hero-sub {
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--blue-dark);
+      opacity: 0.65;
+      line-height: 1.65;
+      margin-bottom: 48px;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #001D4B;
+      color: #ffffff;
+      font-family: 'Borna', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 20px 44px;
+      border-radius: 100px;
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      border: none;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .cta-btn:hover {
+      background: #002a6b;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- INTRO -->
+  <div id="intro">
+    <div id="intro-logo">
+      <img src="Logo_UNLIMITAIL_BRANCA.svg" alt="unlimitail" />
+    </div>
+  </div>
+
+  <!-- PAGE -->
+  <div id="page">
+
+    <header>
+      <div class="header-logo" id="headerLogo">
+        <img src="Logo_unlimitail_only_azul.svg" alt="unlimitail" />
+      </div>
+      <div class="header-center">
+        <div class="title">Design &amp; Conteúdo</div>
+        <div class="sub">Hub de solicitações</div>
+      </div>
+      <div class="header-icon">
+        <img src="Logo_synbol_only.svg" alt="U" />
+      </div>
+    </header>
+
+    <div class="hero">
+      <h1 class="hero-title">Abertura<br>de briefing criativo.</h1>
+      <p class="hero-sub">Centralize as informações da sua solicitação<br>para garantir uma execução mais eficiente.</p>
+      <a href="etapa1.html" class="cta-btn">Faça sua solicitação →</a>
+    </div>
+
+  </div>
+
+  <script>
+    const intro      = document.getElementById('intro');
+    const introLogo  = document.getElementById('intro-logo');
+    const page       = document.getElementById('page');
+    const headerLogo = document.getElementById('headerLogo');
+
+    function runIntro() {
+      setTimeout(() => {
+        const r  = introLogo.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top  + r.height / 2;
+        const scale = 19 / r.height;
+
+        introLogo.style.transition = 'transform 0.65s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease 0.35s';
+        introLogo.style.transform  = `translate(${64 - cx}px, ${38 - cy}px) scale(${scale})`;
+        introLogo.style.opacity    = '0';
+
+        setTimeout(() => {
+          intro.classList.add('out');
+          page.classList.add('visible');
+          headerLogo.classList.add('visible');
+          setTimeout(() => intro.remove(), 500);
+        }, 700);
+      }, 1000);
+    }
+
+    document.fonts.ready.then(runIntro);
+  </script>
+</body>
+</html>

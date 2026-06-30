@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="u_icon.svg" />
+  <link rel="shortcut icon" href="u_icon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unlimitail — Etapa 4</title>
+  <style>
+    @font-face { font-family:'Borna'; src:url('fonts/borna-regular-webfont.ttf') format('truetype'); font-weight:400; }
+    @font-face { font-family:'Borna'; src:url('fonts/borna-medium-webfont.ttf') format('truetype'); font-weight:500; }
+    @font-face { font-family:'Borna'; src:url('fonts/borna-semibold-webfont.ttf') format('truetype'); font-weight:600; }
+    @font-face { font-family:'Borna'; src:url('fonts/borna-bold-webfont.ttf') format('truetype'); font-weight:700; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue-dark: #001D4B;
+      --blue-main: #0036FF;
+      --bg: #DBE0EE;
+      --white: #ffffff;
+      --border: #C8CEDC;
+      --red: #E53935;
+    }
+
+    html, body { font-family: 'Borna', sans-serif; background: var(--bg); }
+    .page { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── HEADER ── */
+    .header { background: var(--blue-dark); flex-shrink: 0; overflow: hidden; }
+    .header-top {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 28px 44px 20px;
+    }
+    .header-logo img { height: 20px; width: auto; display: block; }
+    .header-center { text-align: center; }
+    .header-center .hc-title { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.01em; }
+    .header-center .hc-sub   { font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.5); margin-top: 3px; }
+    .header-right { display: flex; align-items: center; justify-content: flex-end; }
+    .u-icon { height: 30px; width: auto; display: block; }
+
+    .header-body { padding: 48px 44px 0; }
+    .header-body h1 { font-size: 28px; font-weight: 600; color: #fff; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .header-body-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 64px;
+    }
+    .header-body-bottom p { font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+    .step-dots { display: flex; gap: 8px; align-items: center; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.3); transition: background 0.3s; flex-shrink: 0; }
+    .dot.done   { background: #22C55E; }
+    .dot.active { background: #0036FF; }
+
+    .progress-wrap { margin: 0 44px 48px; position: relative; height: 3px; background: rgba(255,255,255,0.25); }
+    .progress-filled { position: absolute; left: 0; top: 0; height: 3px; background: #0036FF; width: 0%; transition: width 0.6s cubic-bezier(0.4,0,0.2,1); }
+
+    /* ── FORM ── */
+    .form-area { flex: 1; padding: 36px 44px 24px; }
+
+    .section-label {
+      display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
+    }
+    .section-label span { font-size: 13px; font-weight: 700; color: var(--blue-dark); white-space: nowrap; }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    /* contexto adicional */
+    .field { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
+    .field label { font-size: 13px; font-weight: 700; color: var(--blue-dark); }
+
+    .field input {
+      font-family: 'Borna', sans-serif;
+      font-size: 14px; font-weight: 400; color: var(--blue-dark);
+      background: #fff; border: 1.5px solid var(--border);
+      border-radius: 8px; padding: 14px 16px;
+      outline: none; width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field input::placeholder { color: #9AA3B5; }
+    .field input:focus { border-color: #0036FF; box-shadow: 0 0 0 3px rgba(0,54,255,0.1); }
+    .field input.filled { border-color: #4A9FD4; }
+
+    /* resumo */
+    .resumo-label { font-size: 13px; font-weight: 700; color: var(--blue-dark); margin-bottom: 14px; }
+
+    .resumo-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px 24px;
+      align-items: start;
+    }
+
+    .resumo-col { display: flex; flex-direction: column; gap: 8px; }
+
+    .resumo-item { font-size: 13px; line-height: 1.5; color: var(--blue-dark); word-break: break-word; }
+    .resumo-item strong { font-weight: 700; display: block; }
+
+    /* ── ACTIONS ── */
+    .actions {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 44px; background: var(--bg);
+    }
+    .btn-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--blue-dark); color: #fff;
+      font-family: 'Borna', sans-serif; font-size: 15px; font-weight: 600;
+      padding: 13px 28px; border-radius: 100px;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-back:hover { background: #002a6b; }
+
+    .btn-send {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--blue-dark); color: #fff;
+      font-family: 'Borna', sans-serif; font-size: 15px; font-weight: 600;
+      padding: 13px 28px; border-radius: 100px;
+      border: none; cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .btn-send:hover { background: #002a6b; }
+    .btn-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: var(--blue-dark); padding: 32px 44px;
+      display: flex; align-items: flex-end; justify-content: flex-end;
+    }
+    .footer-step { font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.4); padding-bottom: 4px; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-logo">
+        <img src="Logo_UNLIMITAIL_BRANCA.svg" alt="unlimitail" />
+      </div>
+      <div class="header-center">
+        <div class="hc-title">Design &amp; Conteúdo</div>
+        <div class="hc-sub">Hub de solicitações</div>
+      </div>
+      <div class="header-right">
+        <img src="u_icon.svg" alt="U" class="u-icon" />
+      </div>
+    </div>
+    <div class="header-body">
+      <h1>Abertura de briefing criativo.</h1>
+      <div class="header-body-bottom">
+        <p>Centralize as informações da sua solicitação<br>para garantir uma execução mais eficiente.</p>
+        <div class="step-dots">
+          <div class="dot done"></div>
+          <div class="dot done"></div>
+          <div class="dot done"></div>
+          <div class="dot active"></div>
+        </div>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-filled" id="progressBar"></div>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-area">
+
+    <div class="section-label"><span>Resumo da solicitação</span></div>
+
+    <!-- Contexto adicional -->
+    <div class="field">
+      <label>Contexto adicional</label>
+      <input type="text" id="contexto" placeholder="Links ou descrição de estilos" />
+    </div>
+
+    <!-- Resumo -->
+    <div class="resumo-label">Resumo da solicitação</div>
+    <div class="resumo-card">
+
+      <!-- col 1: etapa 1 -->
+      <div class="resumo-col" id="col1">
+        <div class="resumo-item"><strong>Nome do Projeto:</strong> <span id="r-nome">—</span></div>
+        <div class="resumo-item"><strong>Área:</strong> <span id="r-area">—</span></div>
+        <div class="resumo-item"><strong>Solicitante:</strong> <span id="r-solicitante">—</span></div>
+        <div class="resumo-item"><strong>Objetivo principal:</strong> <span id="r-objetivo">—</span></div>
+        <div class="resumo-item"><strong>Público-alvo:</strong> <span id="r-publico">—</span></div>
+      </div>
+
+      <!-- col 2: etapa 2 -->
+      <div class="resumo-col" id="col2">
+        <div class="resumo-item"><strong>Tipo de projeto:</strong> <span id="r-tipo">—</span></div>
+        <div class="resumo-item"><strong>Prazo desejado:</strong> <span id="r-prazo">—</span></div>
+        <div class="resumo-item"><strong>Canal de utilização:</strong> <span id="r-canal">—</span></div>
+        <div class="resumo-item"><strong>Prioridade:</strong> <span id="r-prioridade">—</span></div>
+        <div class="resumo-item"><strong>Entregáveis esperados:</strong> <span id="r-entregaveis">—</span></div>
+      </div>
+
+      <!-- col 3: etapa 3 -->
+      <div class="resumo-col" id="col3">
+        <div class="resumo-item"><strong>Refs Visuais:</strong> <span id="r-refs">—</span></div>
+        <div class="resumo-item"><strong>Restrições:</strong> <span id="r-restricoes">—</span></div>
+        <div class="resumo-item"><strong>Link de briefing:</strong> <span id="r-link">—</span></div>
+        <div class="resumo-item"><strong>Quem aprova?:</strong> <span id="r-aprovador">—</span></div>
+      </div>
+
+      <!-- col 4: contexto -->
+      <div class="resumo-col" id="col4">
+        <div class="resumo-item"><strong>Contexto adicional:</strong> <span id="r-contexto">—</span></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <a href="etapa3.html" class="btn-back">← Voltar</a>
+    <button class="btn-send" id="btnSend" onclick="enviar()">Enviar pedido →</button>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-step">Etapa 4 de 4 - Resumo da solicitação</div>
+  </div>
+
+</div>
+<script>
+  const bar = document.getElementById('progressBar');
+
+  // ── CARREGA RESUMO DAS ETAPAS ANTERIORES ──
+  function carregar() {
+    const e1 = JSON.parse(sessionStorage.getItem('etapa1') || '{}');
+    const e2 = JSON.parse(sessionStorage.getItem('etapa2') || '{}');
+    const e3 = JSON.parse(sessionStorage.getItem('etapa3') || '{}');
+
+    // etapa 1
+    set('r-nome',       e1.nomeProjeto);
+    set('r-area',       e1.area);
+    set('r-solicitante',e1.solicitante);
+    set('r-objetivo',   e1.objetivo);
+    set('r-publico',    e1.publicoAlvo);
+
+    // etapa 2
+    set('r-tipo',       e2.tipoProjeto);
+    set('r-prazo',      formatDate(e2.prazo));
+    set('r-canal',      e2.canal);
+    set('r-prioridade', e2.prioridade);
+
+    // entregáveis — junta os nomes
+    const nomes = {
+      deck:     'Deck / Apresentação',
+      video:    'Vídeo',
+      peca:     'Peça gráfica estática',
+      template: 'Template',
+      impresso: 'Material impresso',
+      outro:    e2.outroEntregavel || 'Outro',
+    };
+    const lista = (e2.entregaveis || []).map(id => nomes[id] || id);
+    if (e2.outroEntregavel) lista.push(e2.outroEntregavel);
+    set('r-entregaveis', lista.join(', '));
+
+    // etapa 3
+    set('r-refs',      e3.referencias);
+    set('r-restricoes',e3.restricoes);
+    set('r-link',      e3.linkBriefing);
+    set('r-aprovador', e3.aprovador);
+  }
+
+  function set(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val || '—';
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    const months = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const parts = dateStr.split('-');
+    return `${parseInt(parts[2])} de ${months[parseInt(parts[1])-1]} de ${parts[0]}`;
+  }
+
+  // ── PROGRESSO ──
+  // contexto adicional (opcional) — quando preenchido vai a 100%
+  document.getElementById('contexto').addEventListener('input', () => {
+    const val = document.getElementById('contexto').value.trim();
+    document.getElementById('contexto').classList.toggle('filled', val !== '');
+    document.getElementById('r-contexto').textContent = val || '—';
+  });
+
+  // ── ENVIAR ──
+  function enviar() {
+    const contexto = document.getElementById('contexto').value.trim();
+    sessionStorage.setItem('etapa4', JSON.stringify({ contexto }));
+
+    // limpa tudo após envio
+    sessionStorage.clear();
+    window.location.href = 'sucesso.html';
+  }
+
+  // inicializa — anima de 75% para 100%
+  carregar();
+  bar.style.width = '75%';
+  setTimeout(() => { bar.style.width = '100%'; }, 150);
+</script>
+</body>
+</html>
