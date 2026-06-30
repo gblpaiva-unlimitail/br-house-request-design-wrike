@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="u_icon.svg" />
+  <link rel="shortcut icon" href="u_icon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unlimitail — Briefing recebido!</title>
+  <style>
+    @font-face { font-family:'Borna'; src:url('fonts/borna-regular-webfont.ttf') format('truetype'); font-weight:400; }
+    @font-face { font-family:'Borna'; src:url('fonts/borna-medium-webfont.ttf') format('truetype'); font-weight:500; }
+    @font-face { font-family:'Borna'; src:url('fonts/borna-semibold-webfont.ttf') format('truetype'); font-weight:600; }
+    @font-face { font-family:'Borna'; src:url('fonts/borna-bold-webfont.ttf') format('truetype'); font-weight:700; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root { --blue-dark: #001D4B; }
+
+    html, body { font-family: 'Borna', sans-serif; height: 100%; overflow: hidden; }
+
+    .page {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(135deg, #7EC4E8 0%, #A8D4EC 35%, #C2DFF2 65%, #DBE8F5 100%);
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 28px 44px;
+      flex-shrink: 0;
+    }
+    .header-logo img { height: 20px; width: auto; }
+    .header-center { text-align: center; }
+    .header-center .hc-title { font-size: 14px; font-weight: 700; color: var(--blue-dark); }
+    .header-center .hc-sub   { font-size: 12px; font-weight: 400; color: rgba(0,29,75,0.5); margin-top: 3px; }
+    .header-icon img { height: 28px; width: auto; }
+
+    /* ── HERO ── */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 40px;
+    }
+
+    .hero-title {
+      font-size: clamp(48px, 6vw, 80px);
+      font-weight: 600 !important;
+      color: var(--blue-dark);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      animation: fadeUp 0.6s ease 0.1s both;
+    }
+
+    .hero-sub {
+      font-size: 20px; font-weight: 400;
+      color: var(--blue-dark); opacity: 0.65;
+      line-height: 1.6;
+      animation: fadeUp 0.6s ease 0.25s both;
+    }
+
+    @keyframes fadeUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    /* ── FOOTER ── */
+    .page-footer {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 44px 60px;
+    }
+
+    .btn-novo {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--blue-dark); color: #fff;
+      font-family: 'Borna', sans-serif;
+      font-size: 17px; font-weight: 600;
+      padding: 18px 36px; border-radius: 100px;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      animation: fadeUp 0.6s ease 0.4s both;
+    }
+    .btn-novo:hover { background: #002a6b; transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="header-logo">
+      <img src="Logo_unlimitail_only_azul.svg" alt="unlimitail" />
+    </div>
+    <div class="header-center">
+      <div class="hc-title">Design &amp; Conteúdo</div>
+      <div class="hc-sub">Hub de solicitações</div>
+    </div>
+    <div class="header-icon">
+      <img src="Logo_synbol_only.svg" alt="U" />
+    </div>
+  </header>
+
+  <div class="hero">
+    <h1 class="hero-title">Briefing recebido!</h1>
+    <p class="hero-sub">Agora nossa equipe iniciará a criação da V1.</p>
+  </div>
+
+  <div class="page-footer">
+    <button class="btn-novo" onclick="novoPedido()">Nova solicitação →</button>
+  </div>
+
+</div>
+<script>
+  // ── ENVIA PARA O NOTION ──
+  const e1 = JSON.parse(sessionStorage.getItem('etapa1') || '{}');
+  const e2 = JSON.parse(sessionStorage.getItem('etapa2') || '{}');
+  const e3 = JSON.parse(sessionStorage.getItem('etapa3') || '{}');
+  const e4 = JSON.parse(sessionStorage.getItem('etapa4') || '{}');
+
+  async function enviarNotion() {
+    try {
+      const NOTION_TOKEN = 'SEU_NOTION_TOKEN_AQUI';
+      const DATABASE_ID  = 'SEU_DATABASE_ID_AQUI';
+
+      await fetch('https://api.notion.com/v1/pages', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${NOTION_TOKEN}`,
+          'Content-Type': 'application/json',
+          'Notion-Version': '2022-06-28',
+        },
+        body: JSON.stringify({
+          parent: { database_id: DATABASE_ID },
+          properties: {
+            'Nome':          { title:     [{ text: { content: e1.nomeProjeto    || '' } }] },
+            'Área':          { select:    { name: e1.area                       || '' } },
+            'Solicitante':   { rich_text: [{ text: { content: e1.solicitante    || '' } }] },
+            'Objetivo':      { rich_text: [{ text: { content: e1.objetivo       || '' } }] },
+            'Público-alvo':  { rich_text: [{ text: { content: e1.publicoAlvo    || '' } }] },
+            'Tipo':          { rich_text: [{ text: { content: e2.tipoProjeto    || '' } }] },
+            'Prazo':         { date:      e2.prazo ? { start: e2.prazo } : null },
+            'Canal':         { select:    { name: e2.canal                      || '' } },
+            'Prioridade':    { select:    { name: e2.prioridade                 || '' } },
+            'Entregáveis':   { rich_text: [{ text: { content: (e2.entregaveis||[]).join(', ') } }] },
+            'Referências':   { rich_text: [{ text: { content: e3.referencias    || '' } }] },
+            'Restrições':    { rich_text: [{ text: { content: e3.restricoes     || '' } }] },
+            'Link Briefing': { url:       e3.linkBriefing || null },
+            'Aprovador':     { rich_text: [{ text: { content: e3.aprovador      || '' } }] },
+            'Entrega para':  { rich_text: [{ text: { content: e3.entregaFinal   || '' } }] },
+            'Contexto':      { rich_text: [{ text: { content: e4.contexto       || '' } }] },
+            'Status':        { status:    { name: 'Backlog' } },
+          }
+        })
+      });
+      sessionStorage.clear();
+    } catch(err) {
+      console.error('Erro ao enviar para o Notion:', err);
+    }
+  }
+
+  enviarNotion();
+
+  function novoPedido() {
+    sessionStorage.clear();
+    window.location.href = 'etapa1.html';
+  }
+</script>
+</body>
+</html>

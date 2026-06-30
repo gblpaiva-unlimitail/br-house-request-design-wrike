@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="u_icon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unlimitail — Dashboard Operacional</title>
+  <style>
+    @font-face { font-family:'Borna'; src:url('fonts/borna-regular-webfont.ttf') format('truetype'); font-weight:400; }
+    @font-face { font-family:'Borna'; src:url('fonts/borna-medium-webfont.ttf') format('truetype'); font-weight:500; }
+    @font-face { font-family:'Borna'; src:url('fonts/borna-semibold-webfont.ttf') format('truetype'); font-weight:600; }
+    @font-face { font-family:'Borna'; src:url('fonts/borna-bold-webfont.ttf') format('truetype'); font-weight:700; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue-dark: #001D4B;
+      --blue-main: #0036FF;
+      --bg: #DBE0EE;
+      --white: #ffffff;
+      --border: #C8CEDC;
+      --green: #22C55E;
+      --amber: #F59E0B;
+      --red: #EF4444;
+      --purple: #8B5CF6;
+    }
+
+    html, body {
+      font-family: 'Borna', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      color: var(--blue-dark);
+    }
+
+    /* ── NAV ── */
+    .nav {
+      background: var(--blue-dark);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 44px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo img { height: 18px; width: auto; display: block; }
+    .nav-center { text-align: center; }
+    .nav-center .nc-title { font-size: 14px; font-weight: 700; color: #fff; }
+    .nav-center .nc-sub { font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.5); margin-top: 2px; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: 'Borna', sans-serif; font-size: 13px; font-weight: 600;
+      padding: 9px 18px; border-radius: 100px; cursor: pointer;
+      text-decoration: none; border: none; transition: all 0.2s;
+    }
+    .nav-btn.ghost { background: rgba(255,255,255,0.1); color: #fff; }
+    .nav-btn.ghost:hover { background: rgba(255,255,255,0.2); }
+    .nav-btn.primary { background: #0036FF; color: #fff; }
+    .nav-btn.primary:hover { background: #0028cc; }
+
+    /* ── PAGE LAYOUT ── */
+    .page { padding: 36px 44px 64px; max-width: 1440px; margin: 0 auto; }
+
+    /* ── PAGE TITLE ── */
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-size: 32px; font-weight: 600; letter-spacing: -0.02em; }
+    .page-header p { font-size: 14px; color: rgba(0,29,75,0.55); margin-top: 4px; }
+
+    /* ── METRIC CARDS ── */
+    .metrics-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .metric-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 22px 24px;
+      display: flex; flex-direction: column; gap: 10px;
+      transition: box-shadow 0.2s;
+    }
+    .metric-card:hover { box-shadow: 0 4px 20px rgba(0,29,75,0.08); }
+    .metric-top { display: flex; align-items: center; justify-content: space-between; }
+    .metric-label { font-size: 12px; font-weight: 600; color: rgba(0,29,75,0.5); text-transform: uppercase; letter-spacing: 0.05em; }
+    .metric-badge {
+      width: 34px; height: 34px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .metric-val { font-size: 38px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+    .metric-delta { font-size: 12px; font-weight: 500; color: rgba(0,29,75,0.45); }
+    .metric-delta .up { color: var(--green); }
+    .metric-delta .down { color: var(--red); }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-size: 13px; font-weight: 700; color: rgba(0,29,75,0.5);
+      text-transform: uppercase; letter-spacing: 0.07em;
+      margin-bottom: 14px;
+    }
+
+    /* ── KANBAN STRIP ── */
+    .kanban-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 24px; }
+    .kanban-col {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 16px 18px;
+    }
+    .kanban-col-label {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.07em; color: rgba(0,29,75,0.45); margin-bottom: 10px;
+    }
+    .kanban-col-count { font-size: 36px; font-weight: 700; letter-spacing: -0.03em; }
+    .kanban-bar { height: 4px; border-radius: 4px; margin-top: 12px; background: var(--bg); overflow: hidden; }
+    .kanban-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+
+    /* ── GRID 2-COL ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+    .grid-3-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 24px; }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 24px;
+    }
+    .card-title { font-size: 15px; font-weight: 700; margin-bottom: 20px; }
+
+    /* ── BAR CHART (área) ── */
+    .bar-list { display: flex; flex-direction: column; gap: 14px; }
+    .bar-item { display: flex; flex-direction: column; gap: 6px; }
+    .bar-item-top { display: flex; justify-content: space-between; align-items: center; }
+    .bar-item-label { font-size: 13px; font-weight: 500; }
+    .bar-item-val { font-size: 13px; font-weight: 700; }
+    .bar-track { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; background: var(--blue-main); transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+
+    /* ── DONUT CHART ── */
+    .donut-wrap { display: flex; align-items: center; gap: 28px; }
+    .donut-svg-wrap { position: relative; flex-shrink: 0; }
+    .donut-center {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .donut-center-val { font-size: 26px; font-weight: 700; }
+    .donut-center-label { font-size: 11px; color: rgba(0,29,75,0.5); font-weight: 500; }
+    .donut-legend { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .legend-row { display: flex; align-items: center; gap: 8px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .legend-text { font-size: 13px; font-weight: 500; flex: 1; }
+    .legend-pct { font-size: 13px; font-weight: 700; }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      font-size: 11px; font-weight: 700; color: rgba(0,29,75,0.45);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      padding: 0 0 12px; text-align: left;
+      border-bottom: 1.5px solid var(--border);
+    }
+    tbody tr { border-bottom: 1px solid #f1f4fa; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td { padding: 12px 0; font-size: 13px; vertical-align: middle; }
+    .td-proj { font-weight: 600; max-width: 180px; }
+    .td-area { color: rgba(0,29,75,0.55); }
+    .td-date { font-weight: 500; white-space: nowrap; }
+    .td-date.urgent { color: var(--red); }
+    .td-date.warning { color: var(--amber); }
+    .td-date.ok { color: var(--green); }
+
+    /* ── STATUS BADGE ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 100px;
+      font-size: 11px; font-weight: 600;
+    }
+    .badge.backlog    { background: #F1F5F9; color: #64748B; }
+    .badge.a-iniciar  { background: #EFF6FF; color: #3B82F6; }
+    .badge.andamento  { background: #FFFBEB; color: #D97706; }
+    .badge.revisao    { background: #F5F3FF; color: #7C3AED; }
+    .badge.finalizado { background: #F0FDF4; color: #16A34A; }
+    .badge.cancelado  { background: #FEF2F2; color: #DC2626; }
+    .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    /* ── PRIORITY BADGE ── */
+    .prio { display: inline-flex; align-items: center;
+      padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+    .prio.alta   { background: #FEF2F2; color: #DC2626; }
+    .prio.media  { background: #FFFBEB; color: #D97706; }
+    .prio.baixa  { background: #F0FDF4; color: #16A34A; }
+
+    /* ── RANKING ── */
+    .ranking-list { display: flex; flex-direction: column; gap: 12px; }
+    .ranking-row { display: flex; align-items: center; gap: 14px; }
+    .ranking-pos { width: 22px; font-size: 13px; font-weight: 700; color: rgba(0,29,75,0.3); text-align: center; flex-shrink: 0; }
+    .ranking-pos.gold   { color: #F59E0B; }
+    .ranking-pos.silver { color: #94A3B8; }
+    .ranking-pos.bronze { color: #CD7C42; }
+    .ranking-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--bg); display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: var(--blue-dark);
+      flex-shrink: 0;
+    }
+    .ranking-info { flex: 1; }
+    .ranking-name { font-size: 13px; font-weight: 600; }
+    .ranking-area { font-size: 11px; color: rgba(0,29,75,0.45); margin-top: 1px; }
+    .ranking-count { font-size: 15px; font-weight: 700; }
+    .ranking-count span { font-size: 11px; font-weight: 400; color: rgba(0,29,75,0.4); }
+
+    /* ── CAPACITY GAUGE ── */
+    .capacity-row { display: flex; flex-direction: column; gap: 14px; }
+    .cap-person { display: flex; align-items: center; gap: 12px; }
+    .cap-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex-shrink: 0;
+    }
+    .cap-info { flex: 1; }
+    .cap-name { font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+    .cap-track { height: 6px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+    .cap-fill { height: 100%; border-radius: 4px; transition: width 0.8s ease; }
+    .cap-pct { font-size: 12px; font-weight: 700; min-width: 36px; text-align: right; }
+
+    /* ── TIME METRIC ── */
+    .time-metric-row { display: flex; gap: 20px; margin-bottom: 20px; }
+    .time-metric { flex: 1; text-align: center; }
+    .time-metric .tm-val { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; }
+    .time-metric .tm-unit { font-size: 12px; color: rgba(0,29,75,0.45); font-weight: 500; }
+    .time-metric .tm-label { font-size: 12px; color: rgba(0,29,75,0.55); margin-top: 4px; }
+    .time-divider { width: 1px; background: var(--border); }
+
+    /* ── EMPTY STATE ── */
+    .empty { text-align: center; padding: 40px 0; color: rgba(0,29,75,0.35); font-size: 13px; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-logo">
+      <img src="Logo_UNLIMITAIL_BRANCA.svg" alt="unlimitail" />
+    </div>
+    <div class="nav-center">
+      <div class="nc-title">Design &amp; Conteúdo</div>
+      <div class="nc-sub">Hub de solicitações</div>
+    </div>
+    <div class="nav-right">
+      <a href="index.html" class="nav-btn ghost">← Início</a>
+      <a href="etapa1.html" class="nav-btn primary">+ Nova solicitação</a>
+    </div>
+  </nav>
+
+  <!-- PAGE -->
+  <div class="page">
+
+    <!-- HEADER -->
+    <div class="page-header">
+      <h1>Dashboard operacional</h1>
+      <p>Visão geral da equipe de Design &amp; Conteúdo · Atualizado agora</p>
+    </div>
+
+    <!-- KPIs -->
+    <div class="metrics-row">
+      <div class="metric-card">
+        <div class="metric-top">
+          <div class="metric-label">Total de solicitações</div>
+          <div class="metric-badge" style="background:#EFF6FF;">📋</div>
+        </div>
+        <div class="metric-val">47</div>
+        <div class="metric-delta"><span class="up">↑ 12</span> este mês</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-top">
+          <div class="metric-label">Em andamento</div>
+          <div class="metric-badge" style="background:#FFFBEB;">⚙️</div>
+        </div>
+        <div class="metric-val">11</div>
+        <div class="metric-delta"><span>3 vencendo esta semana</span></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-top">
+          <div class="metric-label">Finalizados (mês)</div>
+          <div class="metric-badge" style="background:#F0FDF4;">✅</div>
+        </div>
+        <div class="metric-val">18</div>
+        <div class="metric-delta"><span class="up">↑ 5</span> vs mês anterior</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-top">
+          <div class="metric-label">Alta prioridade</div>
+          <div class="metric-badge" style="background:#FEF2F2;">🔴</div>
+        </div>
+        <div class="metric-val">6</div>
+        <div class="metric-delta"><span class="down">↑ 2</span> vs semana passada</div>
+      </div>
+    </div>
+
+    <!-- KANBAN STATUS -->
+    <div class="section-title">Status dos cards</div>
+    <div class="kanban-row">
+      <div class="kanban-col">
+        <div class="kanban-col-label">Backlog</div>
+        <div class="kanban-col-count" style="color:#64748B;">8</div>
+        <div class="kanban-bar"><div class="kanban-bar-fill" style="width:17%;background:#94A3B8;"></div></div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-col-label">A iniciar</div>
+        <div class="kanban-col-count" style="color:#3B82F6;">5</div>
+        <div class="kanban-bar"><div class="kanban-bar-fill" style="width:11%;background:#3B82F6;"></div></div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-col-label">Em andamento</div>
+        <div class="kanban-col-count" style="color:#D97706;">11</div>
+        <div class="kanban-bar"><div class="kanban-bar-fill" style="width:23%;background:#F59E0B;"></div></div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-col-label">Revisão</div>
+        <div class="kanban-col-count" style="color:#7C3AED;">4</div>
+        <div class="kanban-bar"><div class="kanban-bar-fill" style="width:9%;background:#8B5CF6;"></div></div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-col-label">Finalizado</div>
+        <div class="kanban-col-count" style="color:#16A34A;">18</div>
+        <div class="kanban-bar"><div class="kanban-bar-fill" style="width:38%;background:#22C55E;"></div></div>
+      </div>
+      <div class="kanban-col">
+        <div class="kanban-col-label">Cancelado</div>
+        <div class="kanban-col-count" style="color:#DC2626;">1</div>
+        <div class="kanban-bar"><div class="kanban-bar-fill" style="width:2%;background:#EF4444;"></div></div>
+      </div>
+    </div>
+
+    <!-- ROW: ÁREA + PRIORIDADE -->
+    <div class="grid-2">
+
+      <!-- Distribuição por área -->
+      <div class="card">
+        <div class="card-title">Demandas por área</div>
+        <div class="bar-list" id="areaList"></div>
+      </div>
+
+      <!-- Prioridade donut -->
+      <div class="card">
+        <div class="card-title">Distribuição por prioridade</div>
+        <div class="donut-wrap">
+          <div class="donut-svg-wrap">
+            <svg width="140" height="140" viewBox="0 0 140 140" id="donutSvg"></svg>
+            <div class="donut-center">
+              <div class="donut-center-val">47</div>
+              <div class="donut-center-label">total</div>
+            </div>
+          </div>
+          <div class="donut-legend" id="donutLegend"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ROW: PRÓXIMOS VENCIMENTOS + TEMPO MÉDIO -->
+    <div class="grid-3-1">
+
+      <!-- Vencimentos -->
+      <div class="card">
+        <div class="card-title">Próximos vencimentos</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Projeto</th>
+                <th>Área</th>
+                <th>Prioridade</th>
+                <th>Status</th>
+                <th>Prazo</th>
+              </tr>
+            </thead>
+            <tbody id="deadlineTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tempo médio -->
+      <div class="card">
+        <div class="card-title">Tempo médio</div>
+        <div class="time-metric-row">
+          <div class="time-metric">
+            <div class="tm-val">4,2</div>
+            <div class="tm-unit">dias</div>
+            <div class="tm-label">Execução média</div>
+          </div>
+          <div class="time-divider"></div>
+          <div class="time-metric">
+            <div class="tm-val">1,8</div>
+            <div class="tm-unit">dias</div>
+            <div class="tm-label">Revisão média</div>
+          </div>
+        </div>
+        <div style="height:1px;background:var(--border);margin:4px 0 20px;"></div>
+        <div class="bar-list">
+          <div class="bar-item">
+            <div class="bar-item-top">
+              <span class="bar-item-label" style="font-size:12px;">Deck</span>
+              <span class="bar-item-val" style="font-size:12px;">5,1d</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" style="width:85%;background:#0036FF;"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="bar-item-top">
+              <span class="bar-item-label" style="font-size:12px;">Vídeo</span>
+              <span class="bar-item-val" style="font-size:12px;">7,4d</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" style="width:100%;background:#8B5CF6;"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="bar-item-top">
+              <span class="bar-item-label" style="font-size:12px;">Banner</span>
+              <span class="bar-item-val" style="font-size:12px;">2,3d</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" style="width:31%;background:#F59E0B;"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="bar-item-top">
+              <span class="bar-item-label" style="font-size:12px;">Template</span>
+              <span class="bar-item-val" style="font-size:12px;">3,0d</span>
+            </div>
+            <div class="bar-track"><div class="bar-fill" style="width:40%;background:#22C55E;"></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ROW: CAPACIDADE + RANKING -->
+    <div class="grid-2">
+
+      <!-- Capacidade da equipe -->
+      <div class="card">
+        <div class="card-title">Capacidade da equipe</div>
+        <div class="capacity-row" id="capacityList"></div>
+      </div>
+
+      <!-- Ranking -->
+      <div class="card">
+        <div class="card-title">Ranking — Solicitantes urgentes</div>
+        <div class="ranking-list" id="rankingList"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+<script>
+  // ── DADOS MOCK ──
+  const areas = [
+    { label: 'Vendas',              count: 14, total: 47 },
+    { label: 'Marketing',           count: 11, total: 47 },
+    { label: 'Operações Digitais',  count: 8,  total: 47 },
+    { label: 'Financeiro',          count: 7,  total: 47 },
+    { label: 'Operações Instore',   count: 5,  total: 47 },
+    { label: 'Facilities',          count: 2,  total: 47 },
+  ];
+
+  const prioridades = [
+    { label: 'Alta',  count: 14, color: '#EF4444' },
+    { label: 'Média', count: 21, color: '#F59E0B' },
+    { label: 'Baixa', count: 12, color: '#22C55E' },
+  ];
+
+  const deadlines = [
+    { proj: 'Deck CMO Summit',          area: 'Vendas',    prio: 'alta',  status: 'andamento', date: '27 Jun', urgency: 'urgent' },
+    { proj: 'Banner Copa do Mundo',      area: 'Marketing', prio: 'alta',  status: 'a-iniciar', date: '28 Jun', urgency: 'urgent' },
+    { proj: 'Template Relatório Q2',     area: 'Financeiro',prio: 'media', status: 'revisao',   date: '30 Jun', urgency: 'warning'},
+    { proj: 'Vídeo Campanha São João',   area: 'Marketing', prio: 'alta',  status: 'andamento', date: '02 Jul', urgency: 'warning'},
+    { proj: 'Material Evento Facilities',area: 'Facilities',prio: 'baixa', status: 'backlog',   date: '07 Jul', urgency: 'ok'    },
+    { proj: 'Apresentação Parceiros',    area: 'Vendas',    prio: 'media', status: 'a-iniciar', date: '10 Jul', urgency: 'ok'    },
+  ];
+
+  const team = [
+    { name: 'Ana Ribeiro',   role: 'Designer Sr.',     pct: 90, color: '#EF4444' },
+    { name: 'Carlos Melo',   role: 'Motion Designer',  pct: 75, color: '#F59E0B' },
+    { name: 'Juliana Lima',  role: 'Designer Pl.',     pct: 60, color: '#F59E0B' },
+    { name: 'Pedro Araújo',  role: 'Designer Jr.',     pct: 40, color: '#22C55E' },
+    { name: 'Mariana Gomes', role: 'Conteúdo',         pct: 55, color: '#22C55E' },
+  ];
+
+  const ranking = [
+    { name: 'Rafael Souza',   area: 'Vendas',    count: 5, initials: 'RS' },
+    { name: 'Camila Torres',  area: 'Marketing', count: 4, initials: 'CT' },
+    { name: 'Bruno Almeida',  area: 'Vendas',    count: 3, initials: 'BA' },
+    { name: 'Letícia Faria',  area: 'Financeiro',count: 2, initials: 'LF' },
+    { name: 'Thiago Martins', area: 'Op. Digital',count:1, initials: 'TM' },
+  ];
+
+  // ── ÁREA BARS ──
+  const areaList = document.getElementById('areaList');
+  areas.forEach(a => {
+    const pct = Math.round(a.count / a.total * 100);
+    areaList.innerHTML += `
+      <div class="bar-item">
+        <div class="bar-item-top">
+          <span class="bar-item-label">${a.label}</span>
+          <span class="bar-item-val">${a.count}</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;"></div></div>
+      </div>`;
+  });
+
+  // ── DONUT ──
+  (function() {
+    const total = prioridades.reduce((s, p) => s + p.count, 0);
+    const R = 55, cx = 70, cy = 70, strokeW = 18;
+    const circ = 2 * Math.PI * R;
+    let offset = 0;
+    let svgStr = '';
+    prioridades.forEach(p => {
+      const dash = (p.count / total) * circ;
+      const gap  = circ - dash;
+      svgStr += `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none"
+        stroke="${p.color}" stroke-width="${strokeW}"
+        stroke-dasharray="${dash} ${gap}"
+        stroke-dashoffset="${-offset}"
+        transform="rotate(-90 ${cx} ${cy})" />`;
+      offset += dash;
+    });
+    document.getElementById('donutSvg').innerHTML = svgStr;
+
+    const leg = document.getElementById('donutLegend');
+    prioridades.forEach(p => {
+      const pct = Math.round(p.count / total * 100);
+      leg.innerHTML += `
+        <div class="legend-row">
+          <div class="legend-dot" style="background:${p.color};"></div>
+          <span class="legend-text">${p.label}</span>
+          <span class="legend-pct">${pct}%</span>
+        </div>`;
+    });
+  })();
+
+  // ── DEADLINE TABLE ──
+  const tbody = document.getElementById('deadlineTable');
+  const statusLabel = { backlog:'Backlog', 'a-iniciar':'A iniciar', andamento:'Em andamento', revisao:'Revisão', finalizado:'Finalizado' };
+  deadlines.forEach(d => {
+    tbody.innerHTML += `
+      <tr>
+        <td class="td-proj">${d.proj}</td>
+        <td class="td-area">${d.area}</td>
+        <td><span class="prio ${d.prio}">${d.prio.charAt(0).toUpperCase()+d.prio.slice(1)}</span></td>
+        <td><span class="badge ${d.status}">${statusLabel[d.status]}</span></td>
+        <td class="td-date ${d.urgency}">${d.date}</td>
+      </tr>`;
+  });
+
+  // ── CAPACIDADE ──
+  const capList = document.getElementById('capacityList');
+  team.forEach(p => {
+    capList.innerHTML += `
+      <div class="cap-person">
+        <div class="cap-avatar">${p.name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div>
+        <div class="cap-info">
+          <div class="cap-name">${p.name} <span style="font-weight:400;font-size:11px;color:rgba(0,29,75,.4)">${p.role}</span></div>
+          <div class="cap-track"><div class="cap-fill" style="width:${p.pct}%;background:${p.color};"></div></div>
+        </div>
+        <div class="cap-pct" style="color:${p.color};">${p.pct}%</div>
+      </div>`;
+  });
+
+  // ── RANKING ──
+  const rankList = document.getElementById('rankingList');
+  const medals = ['gold', 'silver', 'bronze', '', ''];
+  ranking.forEach((r, i) => {
+    rankList.innerHTML += `
+      <div class="ranking-row">
+        <div class="ranking-pos ${medals[i]}">${i+1}</div>
+        <div class="ranking-avatar">${r.initials}</div>
+        <div class="ranking-info">
+          <div class="ranking-name">${r.name}</div>
+          <div class="ranking-area">${r.area}</div>
+        </div>
+        <div class="ranking-count">${r.count} <span>urgentes</span></div>
+      </div>`;
+  });
+</script>
+</body>
+</html>
