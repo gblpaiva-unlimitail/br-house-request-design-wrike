@@ -295,8 +295,8 @@
     const contexto = document.getElementById('contexto').value.trim();
     sessionStorage.setItem('etapa4', JSON.stringify({ contexto }));
 
-    // limpa tudo após envio
-    sessionStorage.clear();
+    // NÃO limpar aqui — o sucesso.html precisa ler etapa1/2/3/4
+    // antes de enviar ao Wrike. A limpeza acontece lá, depois do envio.
     window.location.href = 'sucesso.html';
   }
 
