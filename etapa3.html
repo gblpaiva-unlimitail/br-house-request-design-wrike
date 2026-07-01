@@ -235,6 +235,7 @@
       entregaFinal:  document.getElementById('entregaFinal').value.trim(),
     };
     sessionStorage.setItem('etapa3', JSON.stringify(data));
+    console.log('Salvando etapa3:', JSON.stringify(data));
     window.location.href = 'etapa4.html';
   }
 
