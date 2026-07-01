@@ -125,6 +125,12 @@
     const e3 = JSON.parse(sessionStorage.getItem('etapa3') || '{}');
     const e4 = JSON.parse(sessionStorage.getItem('etapa4') || '{}');
 
+    // Debug — ver o que está no sessionStorage
+    console.log('etapa1:', JSON.stringify(e1));
+    console.log('etapa2:', JSON.stringify(e2));
+    console.log('etapa3:', JSON.stringify(e3));
+    console.log('etapa4:', JSON.stringify(e4));
+
     try {
       const response = await fetch('/api/wrike', {
         method: 'POST',
