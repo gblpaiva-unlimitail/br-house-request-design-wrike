@@ -632,6 +632,7 @@
       pecaFormatos: document.getElementById('peca-formatos')?.value,
     };
     sessionStorage.setItem('etapa2', JSON.stringify(data));
+    console.log('Salvando etapa2:', JSON.stringify(data));
     window.location.href = 'etapa3.html';
   }
 
