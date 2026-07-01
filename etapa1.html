@@ -374,6 +374,7 @@
     const data = {};
     fields.forEach(id => data[id] = document.getElementById(id).value.trim());
     sessionStorage.setItem('etapa1', JSON.stringify(data));
+    console.log('Salvando etapa1:', JSON.stringify(data));
     window.location.href = 'etapa2.html';
   }
 
