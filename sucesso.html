@@ -158,6 +158,7 @@
     } catch (err) {
       console.error('Erro ao enviar:', err);
     } finally {
+      // Limpa DEPOIS de enviar
       sessionStorage.clear();
     }
   }
